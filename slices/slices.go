@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"slices"
+)
 
 // slices -> dynamic array
 // most used construct
@@ -32,13 +35,21 @@ func main() {
 
 	// fmt.Println(cap(chai))
 
-	var nums2 = make([]string, len(chai))
+	var chai2 = make([]string, len(chai))
 
 	// copy function
-	copy(nums2, chai)
+	copy(chai2, chai)
 
-	fmt.Print(chai, nums2)
+	fmt.Print(chai2)
 
 	fmt.Println(chai[0:1])
+
+	//slice
+
+	fmt.Println(slices.Equal(chai, chai2))
+
+	var slice2D = [][]int{}
+
+	fmt.Println(slice2D)
 
 }
