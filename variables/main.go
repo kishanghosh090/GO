@@ -36,4 +36,10 @@ func main() {
 
 	fmt.Println(myRoll)
 
+	// new syntax
+	const (
+		port = 5000
+		host = "localhost"
+	)
+	fmt.Println(port)
 }
