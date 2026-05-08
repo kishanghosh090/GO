@@ -11,8 +11,20 @@ func main() {
 		return el + 100
 	}
 	println(process(fn))
+
+	fun := processIt()
+
+	println(fun(10), fun)
 }
 
+// return a fun
+func processIt() func(a int) int {
+	return func(a int) int {
+		return a * a * a
+	}
+}
+
+// callback fun or higher order func
 func process(fn func(a int) int) int {
 	return fn(23) * fn(23)
 }
