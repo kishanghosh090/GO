@@ -4,6 +4,7 @@ import "fmt"
 
 type Payment interface {
 	pay(amount float32)
+	refund(amount float32)
 }
 
 type payment struct {
@@ -14,6 +15,9 @@ type payment struct {
 type razorpay struct{}
 
 func (r razorpay) pay(amount float32) {
+	fmt.Println("making payment using raz", amount)
+}
+func (r razorpay) refund(amount float32) {
 	fmt.Println("making payment using raz", amount)
 }
 
