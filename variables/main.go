@@ -5,7 +5,15 @@ import "fmt"
 func main() {
 	fmt.Println("variables")
 	var user string = "hello from kishan"
+	const name string = "hello from chai code"
 
+	var age = 19
+	if age != 0 {
+		
+	}
+	for i := 0; i < 11; i++ {
+		fmt.Println(i)
+	}
 	var isLoggedIn bool = true // type inference, the type of isLoggedIn will be bool
 	fmt.Println(user)
 	fmt.Println(isLoggedIn)
