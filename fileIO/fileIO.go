@@ -1,5 +1,7 @@
 package main
 
+import "os"
+
 func main() {
 	// f, err := os.Open("ex.json")
 
@@ -46,4 +48,20 @@ func main() {
 	// }
 
 	// fmt.Print(string(data))
+
+	// read folders
+
+	dir, err := os.Open(".")
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer dir.Close()
+
+	fileInfo, err := dir.ReadDir(-1)
+
+	for _, fi := range fileInfo {
+		println(fi.Name())
+	}
 }
