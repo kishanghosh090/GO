@@ -74,4 +74,9 @@ func main() {
 	defer f.Close()
 
 	f.WriteString("GO...hello from chai")
+
+	// overwrite the file
+	bytes := []byte("hello GOLang")
+
+	f.Write(bytes)
 }
