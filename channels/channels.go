@@ -76,7 +76,8 @@ import (
 // 	fmt.Println("endd....")
 // }
 
-func emailSender(emailChan chan string, done chan bool) {
+// emailChan <-chan string only recive
+func emailSender(emailChan <-chan string, done chan<- bool) {
 	defer func() { done <- true }()
 	for email := range emailChan {
 		fmt.Println("sending email to... ", email)
