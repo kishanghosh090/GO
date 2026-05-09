@@ -8,13 +8,19 @@ import "fmt"
 // 	}
 // }
 
-func printSlice[T int | string](items []T) {
+// func printSlice[T int | string](items []T) {
+// 	for _, item := range items {
+// 		fmt.Println(item)
+// 	}
+// }
+
+func printSlice[T comparable](items []T) {
 	for _, item := range items {
 		fmt.Println(item)
 	}
 }
 
-type ApiResponse[T interface{}] struct {
+type ApiResponse[T any] struct {
 	status  int
 	data    T
 	message string
