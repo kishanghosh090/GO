@@ -85,8 +85,8 @@ func emailSender(emailChan chan string, done chan bool) {
 }
 
 func main() {
-	email := make(chan string, 100)
-	done := make(chan bool)
+	// email := make(chan string, 100)
+	// done := make(chan bool)
 
 	// email <- "kishan1@gmail.com"
 	// email <- "kishan2@gmail.com"
@@ -98,14 +98,34 @@ func main() {
 	// fmt.Println(<-email)
 	// fmt.Println(<-email)
 
-	go emailSender(email, done)
+	// go emailSender(email, done)
 
-	for i := 0; i < 10; i++ {
-		email <- fmt.Sprintf("%d@gmail.com", i)
+	// for i := 0; i < 10; i++ {
+	// 	email <- fmt.Sprintf("%d@gmail.com", i)
+	// }
+
+	// fmt.Println("done sending")
+	// close(email)
+	// <-done
+
+	///
+	chan1 := make(chan int)
+	chan2 := make(chan string)
+
+	go func() {
+		chan1 <- 10
+	}()
+
+	go func() {
+		chan2 <- "GO >>> NODEJS"
+	}()
+
+	for i := 0; i < 2; i++ {
+		select {
+		case chan1Val := <-chan1:
+			fmt.Println("recived data from chan1", chan1Val)
+		case chan2Val := <-chan2:
+			fmt.Println("recived data from chan1", chan2Val)
+		}
 	}
-
-	fmt.Println("done sending")
-	close(email)
-	<-done
-
 }
