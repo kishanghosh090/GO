@@ -1,7 +1,5 @@
 package main
 
-import "os"
-
 func main() {
 	// f, err := os.Open("ex.json")
 
@@ -67,16 +65,20 @@ func main() {
 
 	// create file
 
-	f, err := os.Create("example.txt")
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
+	// f, err := os.Create("example.txt")
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// defer f.Close()
 
-	f.WriteString("GO...hello from chai")
+	// f.WriteString("GO...hello from chai")
 
-	// overwrite the file
-	bytes := []byte("hello GOLang")
+	// // overwrite the file
+	// bytes := []byte("hello GOLang")
 
-	f.Write(bytes)
+	// f.Write(bytes)
+
+	// streaming -----
+	
+
 }
