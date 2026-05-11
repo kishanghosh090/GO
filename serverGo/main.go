@@ -12,7 +12,7 @@ func main() {
 	fmt.Println("")
 	// PerformGetReq()
 	// PerformPostReq()
-	PerformPostFormRequest()
+	// PerformPostFormRequest()
 
 }
 
