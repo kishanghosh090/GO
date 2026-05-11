@@ -15,7 +15,8 @@ type course struct {
 
 func main() {
 	fmt.Println("welcome to JSON video")
-	EncodeJson()
+	// EncodeJson()
+	DecodeJSON()
 }
 
 func EncodeJson() {
@@ -52,5 +53,46 @@ func EncodeJson() {
 		panic(err)
 	}
 	fmt.Println(string(finalJSON))
+
+}
+
+func DecodeJSON() {
+	jsonData := []byte(`
+		{
+                "coursename": "Android Dev",
+                "courseprice": 1000,
+                "website": "LCO",
+                "tags": [
+                        "Android",
+                        "mobile dev"
+				]
+        }
+	`)
+
+	var lcoCourse course
+
+	checkValid := json.Valid(jsonData)
+
+	if checkValid {
+		fmt.Println("json is valid")
+
+		json.Unmarshal(jsonData, &lcoCourse)
+
+		fmt.Printf("%#v\n", lcoCourse)
+	} else {
+		fmt.Println("Invalid JSON")
+	}
+
+	var myOnlineData map[string]interface{}
+
+	if checkValid {
+		fmt.Println("json is valid")
+
+		json.Unmarshal(jsonData, &myOnlineData)
+
+		fmt.Printf("%#v\n", myOnlineData["coursename"])
+	} else {
+		fmt.Println("Invalid JSON")
+	}
 
 }
