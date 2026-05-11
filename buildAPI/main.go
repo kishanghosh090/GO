@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -34,6 +35,42 @@ func (c *Course) IsEmpty() bool {
 }
 
 func main() {
+	r := mux.NewRouter()
+	courses = append(courses, Course{
+		CourseId:    "2",
+		CourseName:  "React",
+		CoursePrice: 299,
+		Author: &Author{
+			Fullname: "kishan",
+			Website:  "kishanranaghosh.xyz",
+		},
+	})
+	courses = append(courses, Course{
+		CourseId:    "3",
+		CourseName:  "React",
+		CoursePrice: 299,
+		Author: &Author{
+			Fullname: "kishan",
+			Website:  "kishanranaghosh.xyz",
+		},
+	})
+	courses = append(courses, Course{
+		CourseId:    "4",
+		CourseName:  "React",
+		CoursePrice: 299,
+		Author: &Author{
+			Fullname: "kishan",
+			Website:  "kishanranaghosh.xyz",
+		},
+	})
+	r.HandleFunc("/", serveHome).Methods("GET")
+	r.HandleFunc("/courses", getAllCourses).Methods("GET")
+	r.HandleFunc("/course/{id}", getOneCourse).Methods("GET")
+	r.HandleFunc("/course", createOneCourse).Methods("POST")
+	r.HandleFunc("/course", updateOneCourse).Methods("PUT")
+	r.HandleFunc("/course", deleteOneCourse).Methods("DELETE")
+
+	log.Fatal(http.ListenAndServe(":4007", r))
 
 }
 
@@ -93,5 +130,45 @@ func createOneCourse(w http.ResponseWriter, r *http.Request) {
 	// append
 	courses = append(courses, course)
 	json.NewEncoder(w).Encode(course)
+
+}
+
+func updateOneCourse(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	// first grab id
+	params := mux.Vars(r)
+
+	// loop id
+
+	for idx, course := range courses {
+		if course.CourseId == params["id"] {
+			courses = append(courses[:idx], courses[idx+1:]...)
+			var course Course
+			_ = json.NewDecoder(r.Body).Decode(&course)
+			course.CourseId = params["id"]
+			courses = append(courses, course)
+			json.NewEncoder(w).Encode(course)
+		}
+	}
+	json.NewEncoder(w).Encode("no id found")
+
+}
+
+func deleteOneCourse(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	// first grab id
+	params := mux.Vars(r)
+
+	// loop id
+
+	for idx, course := range courses {
+		if course.CourseId == params["id"] {
+			courses = append(courses[:idx], courses[idx+1:]...)
+			json.NewEncoder(w).Encode(course)
+		}
+	}
+	json.NewEncoder(w).Encode("no id found")
 
 }
