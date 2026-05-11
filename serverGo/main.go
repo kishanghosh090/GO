@@ -4,13 +4,15 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
 func main() {
 	fmt.Println("")
 	// PerformGetReq()
-	PerformPostReq()
+	// PerformPostReq()
+	PerformPostFormRequest()
 
 }
 
@@ -53,4 +55,23 @@ func PerformPostReq() {
 
 	fmt.Println(string(content))
 
+}
+
+func PerformPostFormRequest() {
+	const myUrl = "http://localhost:4002/post"
+
+	data := url.Values{}
+
+	data.Add("name", "elychi")
+	data.Add("type", "cold chai")
+
+	res, err := http.PostForm(myUrl, data)
+
+	if err != nil {
+		panic(err)
+	}
+	defer res.Body.Close()
+
+	content, _ := io.ReadAll(res.Body)
+	fmt.Println(string(content))
 }
