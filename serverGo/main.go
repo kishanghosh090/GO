@@ -9,7 +9,9 @@ import (
 
 func main() {
 	fmt.Println("")
-	PerformGetReq()
+	// PerformGetReq()
+	PerformPostReq()
+
 }
 
 func PerformGetReq() {
@@ -26,5 +28,29 @@ func PerformGetReq() {
 	content, _ := io.ReadAll(response.Body)
 
 	println(string(content))
+
+}
+
+func PerformPostReq() {
+	const myUrl = "http://localhost:4002/post"
+
+	// fake json payload
+
+	reqBody := strings.NewReader(`
+		{
+			"courseName" : "lets go ",
+			"price" : 0
+		}
+	`)
+
+	response, err := http.Post(myUrl, "application/json", reqBody)
+
+	if err != nil {
+		panic(err)
+	}
+
+	content, _ := io.ReadAll(response.Body)
+
+	fmt.Println(string(content))
 
 }
