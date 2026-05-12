@@ -3,9 +3,12 @@ package controllers
 // import "github.com/kishanghosh090/mongoAPI/db"
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/kishanghosh090/mongoAPI/db"
 	"github.com/kishanghosh090/mongoAPI/models"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -54,4 +57,51 @@ func deleteOneMovie(movieId string) {
 	}
 
 	println("modified count ", res.DeletedCount)
+}
+
+func getAllMovie() []primitive.M {
+	cursor, err := collection.Find(context.Background(), bson.D{{}})
+	if err != nil {
+		log.Fatal(err)
+	}
+	var movies []primitive.M
+
+	for cursor.Next(context.Background()) {
+		var movie bson.M
+		err := cursor.Decode(&movie)
+		if err != nil {
+			log.Fatal(err)
+		}
+		movies = append(movies, primitive.M(movie))
+	}
+	defer cursor.Close(context.Background())
+	return movies
+}
+
+// actual controllers
+
+func GetAllMovies(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	allMovies := getAllMovie()
+	json.NewEncoder(w).Encode(allMovies)
+}
+
+func CreateMovie(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+
+	var movie models.Netflix
+
+	_ = json.NewDecoder(r.Body).Decode(&movie)
+	insertOneMovie(movie)
+	json.NewEncoder(w).Encode(movie)
+}
+
+func MarkAsWatched(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+
+	params := mux.Vars(r)
+	updateOneMovie(params["id"])
+	json.NewEncoder(w).Encode(params)
 }
