@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
-const connectionString = "mongodb://admin:1234@mongo:27017"
+const connectionString = "mongodb://admin:1234@localhost:27017"
 const dbName = "netflix"
 const colName = "watchlist"
 
