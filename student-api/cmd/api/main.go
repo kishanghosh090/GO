@@ -1,46 +1,23 @@
+
 package main
 
 import (
-	"context"
-	"database/sql"
 	"log"
-	"time"
+	"net/http"
 
-	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/dialect/pgdialect"
-	"github.com/uptrace/bun/driver/pgdriver"
+	"github.com/kishanghosh090/api/internal/config"
 )
 
-type User struct {
-	bun.BaseModel `bun:"table:users,alias:u"`
-
-	ID        int64     `bun:",pk,autoincrement"`
-	Name      string    `bun:",notnull"`
-	Email     string    `bun:",unique,notnull"`
-	CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
-	UpdatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
-}
-
-// Using pgdriver (recommended)
-var sqldb = sql.OpenDB(pgdriver.NewConnector(
-	pgdriver.WithDSN("postgres://user:0088@localhost:5432/go?sslmode=disable"),
-))
-var db = bun.NewDB(sqldb, pgdialect.New())
-
 func main() {
-	_, err := db.NewCreateTable().
-		Model((*User)(nil)).
-		IfNotExists().Exec(context.Background())
+	cfg := config.MustLoad()
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	// setup router
 
-	user := &User{Name: "John Doe", Email: "john@example.com"}
+	router := http.NewServeMux()
 
-	_, err = db.NewInsert().Model(user).Exec(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("welcome to chai code go server"))
+	})
+	// println(cfg.Addr)
+	log.Fatal(http.ListenAndServe(cfg.Addr, router))
 }
