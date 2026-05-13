@@ -1,60 +1,46 @@
 package main
 
 import (
+	"context"
 	"database/sql"
-	"fmt"
 	"log"
 	"time"
 
-	"github.com/lib/pq"
+	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dialect/pgdialect"
+	"github.com/uptrace/bun/driver/pgdriver"
 )
 
-var cfg = pq.Config{
-	Host:           "localhost",
-	Port:           5432,
-	User:           "user",
-	ConnectTimeout: 5 * time.Second,
-	Password:       "0088",
-	SSLMode:        pq.SSLModeDisable,
-	Database:       "go",
+type User struct {
+	bun.BaseModel `bun:"table:users,alias:u"`
+
+	ID        int64     `bun:",pk,autoincrement"`
+	Name      string    `bun:",notnull"`
+	Email     string    `bun:",unique,notnull"`
+	CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
+	UpdatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
 }
 
+// Using pgdriver (recommended)
+var sqldb = sql.OpenDB(pgdriver.NewConnector(
+	pgdriver.WithDSN("postgres://user:0088@localhost:5432/go?sslmode=disable"),
+))
+var db = bun.NewDB(sqldb, pgdialect.New())
+
 func main() {
-	fmt.Println("welcome to chai")
-
-	c, err := pq.NewConnectorConfig(cfg)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Create connection pool.
-	db := sql.OpenDB(c)
-	defer db.Close()
-
-	// Make sure it works.
-	err = db.Ping()
-	if err != nil {
-		log.Fatal(err)
-	}
-	// 	rows, err := db.Query(`CREATE TABLE IF NOT EXISTS public.students (
-	//     student_id SERIAL PRIMARY KEY,
-	//     first_name VARCHAR(50) NOT NULL,
-	//     last_name VARCHAR(50),
-	//     email VARCHAR(100) UNIQUE
-	// );`)
-
-	rows, err := db.Query(`SELECT student_id, first_name FROM students;`)
+	_, err := db.NewCreateTable().
+		Model((*User)(nil)).
+		IfNotExists().Exec(context.Background())
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	for rows.Next() {
-		var id int
-		var name string
-		if err := rows.Scan(&id, &name); err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf("ID: %d, Name: %s\n", id, name)
+
+	user := &User{Name: "John Doe", Email: "john@example.com"}
+
+	_, err = db.NewInsert().Model(user).Exec(context.Background())
+	if err != nil {
+		log.Fatal(err)
 	}
 
 }
