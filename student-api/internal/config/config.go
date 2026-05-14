@@ -28,7 +28,6 @@ func MustLoad() *Config {
 
 	configPath = os.Getenv("CONFIG_PATH")
 
-	println(configPath)
 
 	if configPath == "" {
 		flags := flag.String("config", "", "path to the config file")

@@ -3,11 +3,14 @@ package response
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type Response struct {
-	status string
-	Error  string
+	Status string `json:"status"`
+	Error  string `json:"error,omitempty"`
 }
 
 const (
@@ -29,7 +32,27 @@ func WriteResponse(
 
 func GeneralError(err error) Response {
 	return Response{
-		status: StatusError,
+		Status: StatusError,
 		Error:  err.Error(),
+	}
+}
+
+func ValidationError(errs validator.ValidationErrors) Response {
+	var errMsgs []string
+	for _, err := range errs {
+		switch err.ActualTag() {
+		case "required":
+			errMsgs = append(errMsgs, "field is required")
+		case "email":
+			errMsgs = append(errMsgs, "field must be a valid email")
+		case "min":
+			errMsgs = append(errMsgs, "field must be at least "+err.Param())
+		}
+	}
+	errMsgs = append(errMsgs, "validation failed")
+
+	return Response{
+		Status: StatusError,
+		Error:  "validation failed: " + strings.Join(errMsgs, ", "),
 	}
 }

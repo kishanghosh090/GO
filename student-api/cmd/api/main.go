@@ -65,7 +65,7 @@ func main() {
 	router := http.NewServeMux()
 
 	router.HandleFunc("GET /api/v1/students", student.New())
-	
+
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 

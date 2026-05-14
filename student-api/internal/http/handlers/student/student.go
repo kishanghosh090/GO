@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/kishanghosh090/api/internal/types"
 	"github.com/kishanghosh090/api/internal/utils/response"
 )
@@ -20,7 +21,18 @@ func New() http.HandlerFunc {
 
 			return
 		}
-		println(student.Email)
+		if err != nil {
+			response.WriteResponse(w, http.StatusBadRequest, response.GeneralError(errors.New("invalid request body")))
+			return
+		}
+
+		// validate request body
+
+		err = validator.New().Struct(student)
+		if err != nil {
+			response.WriteResponse(w, http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
 
 		response.WriteResponse(w, http.StatusCreated, map[string]string{"message": "Student created successfully"})
 	}
