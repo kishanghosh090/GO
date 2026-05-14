@@ -47,9 +47,10 @@ func ValidationError(errs validator.ValidationErrors) Response {
 			errMsgs = append(errMsgs, "field must be a valid email")
 		case "min":
 			errMsgs = append(errMsgs, "field must be at least "+err.Param())
+		default:
+			errMsgs = append(errMsgs, "validation failed")
 		}
 	}
-	errMsgs = append(errMsgs, "validation failed")
 
 	return Response{
 		Status: StatusError,
