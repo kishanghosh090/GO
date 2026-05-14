@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/kishanghosh090/api/internal/config"
+	"github.com/kishanghosh090/api/internal/http/handlers/student"
 	"github.com/lmittmann/tint"
 )
 
@@ -63,9 +64,8 @@ func main() {
 
 	router := http.NewServeMux()
 
-	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome to chai code go server"))
-	})
+	router.HandleFunc("GET /api/v1/students", student.New())
+	
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
