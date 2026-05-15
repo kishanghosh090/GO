@@ -32,6 +32,8 @@ import (
 	"sync"
 )
 
+var signals []string
+
 func main() {
 	// goroutine
 	// go greeter("hello")
@@ -42,22 +44,36 @@ func main() {
 
 	websiteList := []string{
 		"https://kishanranaghosh.xyz",
+		"https://kishanranaghosh.xyz",
+		"https://kishanranaghosh.xyz",
+		"https://kishanranaghosh.xyz",
+		"https://kishanranaghosh.xyz",
+		"https://kishanranaghosh.xyz",
+		"https://kishanranaghosh.xyz",
+		"https://kishanranaghosh.xyz",
+		"https://kishanranaghosh.xyz",
+		"https://kishanranaghosh.xyz",
+		"https://kishanranaghosh.xyz",
 		"https://github.com",
 		"https://google.com",
 		"https://chaicode.com",
 	}
+
 	var wg sync.WaitGroup
 	for _, web := range websiteList {
-		go getSatusCode(web, &wg)
 		wg.Add(1)
+		go getSatusCode(web, &wg)
 	}
 	wg.Wait()
+	fmt.Println(signals)
 }
 func getSatusCode(endpoint string, wg *sync.WaitGroup) int {
 	res, err := http.Get(endpoint)
 	defer wg.Done()
 	if err != nil {
 		panic(err)
+	} else {
+		signals = append(signals, endpoint)
 	}
 	fmt.Println("endpoint: ", endpoint, ",\nstatus: ", res.StatusCode)
 	return res.StatusCode
