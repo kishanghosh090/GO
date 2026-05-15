@@ -33,6 +33,7 @@ import (
 )
 
 var signals []string
+var mut sync.Mutex
 
 func main() {
 	// goroutine
@@ -73,7 +74,9 @@ func getSatusCode(endpoint string, wg *sync.WaitGroup) int {
 	if err != nil {
 		panic(err)
 	} else {
+		mut.Lock()
 		signals = append(signals, endpoint)
+		mut.Unlock()
 	}
 	fmt.Println("endpoint: ", endpoint, ",\nstatus: ", res.StatusCode)
 	return res.StatusCode
