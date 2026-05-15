@@ -28,15 +28,40 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"net/http"
+	"sync"
 )
 
 func main() {
-	go greeter("hello")
-	go greeter("world")
-	time.Sleep(time.Second * 1)
-}
+	// goroutine
+	// go greeter("hello")
+	// go greeter("world")
+	// time.Sleep(time.Second * 1)
 
+	// wait groups
+
+	websiteList := []string{
+		"https://kishanranaghosh.xyz",
+		"https://github.com",
+		"https://google.com",
+		"https://chaicode.com",
+	}
+	var wg sync.WaitGroup
+	for _, web := range websiteList {
+		go getSatusCode(web, &wg)
+		wg.Add(1)
+	}
+	wg.Wait()
+}
+func getSatusCode(endpoint string, wg *sync.WaitGroup) int {
+	res, err := http.Get(endpoint)
+	defer wg.Done()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("endpoint: ", endpoint, ",\nstatus: ", res.StatusCode)
+	return res.StatusCode
+}
 func greeter(s string) {
 	for i := 0; i < 100; i++ {
 		fmt.Println(s)
