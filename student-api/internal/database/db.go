@@ -2,21 +2,28 @@ package database
 
 import (
 	"database/sql"
-	"time"
 
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
 )
 
-type User struct {
+// type User struct {
+// 	bun.BaseModel `bun:"table:users,alias:u"`
+
+//		ID        int64     `bun:",pk,autoincrement"`
+//		Name      string    `bun:",notnull"`
+//		Email     string    `bun:",unique,notnull"`
+//		CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
+//		UpdatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
+//	}
+type Student struct {
 	bun.BaseModel `bun:"table:users,alias:u"`
 
-	ID        int64     `bun:",pk,autoincrement"`
-	Name      string    `bun:",notnull"`
-	Email     string    `bun:",unique,notnull"`
-	CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
-	UpdatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
+	Id    int64  `bun:",pk,autoincrement"`
+	Name  string `bun:",notnull"`
+	Email string `bun:",unique,notnull"`
+	Age   int    `bun:",notnull"`
 }
 
 // Using pgdriver (recommended)
@@ -42,3 +49,7 @@ var DB_CLIENT = bun.NewDB(sqldb, pgdialect.New())
 // 	}
 
 // }
+
+type Storage interface {
+	CreateStudent(name string, email string, age int) (int64, error)
+}
